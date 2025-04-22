@@ -9,20 +9,30 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 public class GetThread implements Runnable {
     private final Gson gson;
+    private final String login;
     private int n; // /get?from=n
 
-    public GetThread() {
-        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+
+    public GetThread(String login, int from) {
+        this.login = login;
+        this.gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        this.n = from;
     }
+//
+//        public GetThread() {
+//        gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+//
+//    }
 
     @Override
     public void run() { // WebSockets
         try {
             while ( ! Thread.interrupted()) {
-                URL url = new URL(Utils.getURL() + "/get?from=" + n);
+                URL url = new URL(Utils.getURL() + "/get?from=" + n + "&login=" + login);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
 
                 InputStream is = http.getInputStream();
